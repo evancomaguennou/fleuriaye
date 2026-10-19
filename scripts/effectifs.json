@@ -1,0 +1,10 @@
+{
+  "_comment": "Effectifs estimés par promo (Fleuriaye). Modifie ces chiffres si tu as les vrais : la page se recalcule à la prochaine mise à jour.",
+  "GMP1": 104, "GMP2": 89, "GMP3": 89,
+  "GI1": 90, "GI2": 77, "GI3": 77,
+  "SG1": 78, "SG2": 67, "SG3": 67,
+  "MT2E1": 78, "MT2E2": 67, "MT2E3": 67,
+  "QLIO1": 78, "QLIO2": 67, "QLIO3": 67,
+  "ITI1": 33, "ITI2": 33,
+  "QLIO1_part_alternance": 0.3
+}

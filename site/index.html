@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fleuriaye en direct</title>
+<meta name="description" content="Fréquentation estimée du site IUT de la Fleuriaye (Carquefou), en direct et par semaine.">
+<meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12181e" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fleuriaye">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: tableau de bord de site — bandeau "maintenant" en tête, semaine en bandes horaires, plan des bâtiments au moment choisi */
+:root{
+  --bg:#eef1f3; --panel:#f8f9fa; --ink:#18222c; --muted:#5b6672; --line:#d3d9de; --grid:#e1e6ea;
+  --accent:#e2a400; --accent-ink:#5a4100;
+  --gmp:#2f6db5; --gei:#c8553d; --sgm:#3c9a73; --mt2e:#8a5bb0; --qlio:#d08a1e; --iti:#24a3b8;
+  --off:#dfe4e8;
+  --n1:#cfe3d6; --n2:#e4e7c4; --n3:#f2cf93; --n4:#eba083; --nink:#18222c;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12181e; --panel:#19212a; --ink:#e6ebef; --muted:#93a0ac; --line:#2c3743; --grid:#222c36;
+  --accent:#f2bb22; --accent-ink:#f8d468;
+  --gmp:#5b95dc; --gei:#e2775f; --sgm:#5cbb91; --mt2e:#a985cf; --qlio:#e3a545; --iti:#47bfd2;
+  --off:#26303a; --n1:#24453a; --n2:#454a26; --n3:#6a4d1c; --n4:#7a3524; --nink:#eef2f4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12181e; --panel:#19212a; --ink:#e6ebef; --muted:#93a0ac; --line:#2c3743; --grid:#222c36;
+  --accent:#f2bb22; --accent-ink:#f8d468;
+  --gmp:#5b95dc; --gei:#e2775f; --sgm:#5cbb91; --mt2e:#a985cf; --qlio:#e3a545; --iti:#47bfd2;
+  --off:#26303a; --n1:#24453a; --n2:#454a26; --n3:#6a4d1c; --n4:#7a3524; --nink:#eef2f4; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+html,body{background:var(--bg);color:var(--ink);margin:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:22px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.label{font-family:var(--f-display);font-stretch:85%;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 20px;border-bottom:2px solid var(--ink);padding-bottom:10px}
+h1{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:clamp(28px,5vw,40px);line-height:1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 span{color:var(--muted);font-weight:600}
+.clock{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 var(--accent);animation:pulse 2s infinite}
+.dot.off{animation:none;background:var(--muted)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+.now{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;align-items:end}
+@media (max-width:760px){.now{grid-template-columns:1fr}}
+.big{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.big .n{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:clamp(64px,12vw,112px);line-height:.85;font-variant-numeric:tabular-nums}
+.big .u{font-size:17px;color:var(--muted);max-width:22ch;line-height:1.3}
+.mode{display:inline-flex;align-items:center;gap:8px;margin-bottom:6px}
+.pill{font-family:var(--f-mono);font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.pill.live{border-color:var(--accent);color:var(--accent-ink)}
+button{font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 11px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button:focus-visible,.room:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stack{display:flex;height:14px;border-radius:3px;overflow:hidden;background:var(--off);margin-top:14px}
+.stack i{display:block;height:100%}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 16px;margin-top:10px;font-size:13.5px}
+.legend div{display:flex;align-items:center;gap:8px;min-width:0}
+.legend b{font-weight:600}
+.legend .v{margin-left:auto}
+.sw{width:10px;height:10px;border-radius:2px;flex:none}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.kpi{background:var(--panel);padding:12px 14px;display:grid;gap:2px}
+.kpi .k{font-family:var(--f-display);font-stretch:80%;font-weight:700;font-size:28px;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi small{color:var(--muted);font-size:12.5px}
+.nb.n1{fill:var(--n1)}.nb.n2{fill:var(--n2)}.nb.n3{fill:var(--n3)}.nb.n4{fill:var(--n4)}
+.nt{font-family:var(--f-mono);font-size:12px;font-weight:500;fill:var(--nink)}
+.kpi.n1{background:color-mix(in srgb,var(--n1) 55%,var(--panel))}.kpi.n2{background:color-mix(in srgb,var(--n2) 55%,var(--panel))}.kpi.n3{background:color-mix(in srgb,var(--n3) 55%,var(--panel))}.kpi.n4{background:color-mix(in srgb,var(--n4) 55%,var(--panel))}
+section.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;min-width:0}
+.weekbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;justify-content:space-between}
+.weekbar h2{font-family:var(--f-display);font-stretch:80%;font-weight:700;font-size:22px;margin:0}
+.weekbar h2 small{font-family:var(--f-body);font-weight:400;font-size:14px;color:var(--muted);margin-left:8px}
+.nav{display:flex;gap:6px}
+.chart{overflow-x:auto}
+svg{display:block}
+.daylab{font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:13px;fill:var(--ink)}
+.daysub{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+.tick{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+.gridl{stroke:var(--grid);stroke-width:1}
+.cur{stroke:var(--ink);stroke-width:1.5}
+.nowl{stroke:var(--accent);stroke-width:2.5}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.lower{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px}
+@media (max-width:900px){.lower{grid-template-columns:1fr}}
+.card h3{font-family:var(--f-display);font-stretch:80%;font-weight:700;font-size:19px;margin:0}
+.card h3 small{font-family:var(--f-mono);font-weight:400;font-size:13px;color:var(--muted);margin-left:6px}
+.blds{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.bld{display:grid;gap:6px;align-content:start}
+.bld header{display:flex;justify-content:space-between;align-items:baseline}
+.bld header b{font-family:var(--f-display);font-stretch:80%;font-weight:800;font-size:18px}
+.bld header span{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:3px}
+.room{font-family:var(--f-mono);font-size:10px;line-height:1;padding:6px 0;text-align:center;border-radius:3px;background:var(--off);color:var(--muted);cursor:default;border:0}
+.room.on{color:#fff;font-weight:500}
+.list{display:grid;gap:0;max-height:520px;overflow:auto}
+.row{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--grid)}
+.row:last-child{border-bottom:0}
+.row .r{font-family:var(--f-mono);font-size:12.5px}
+.row .t{min-width:0}
+.row .t div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.row .t small{color:var(--muted);font-size:12px}
+.row .c{font-family:var(--f-mono);font-size:13px;display:flex;align-items:center;gap:6px}
+.empty{color:var(--muted);font-size:14px;padding:14px 0}
+footer{font-size:12.5px;color:var(--muted);display:grid;gap:4px;max-width:90ch}
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 8px;border-radius:5px;max-width:260px;z-index:20;line-height:1.35}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Fleuriaye <span>fréquentation</span></h1>
+    <div class="clock"><span class="dot" id="dot"></span><span class="mono" id="clock">--:--</span><span>IUT de Nantes · Carquefou</span></div>
+  </header>
+
+  <div class="now">
+    <div>
+      <div class="mode" id="mode"></div>
+      <div class="big"><span class="n" id="bigN">…</span><span class="u" id="bigU">chargement des emplois du temps…</span></div>
+      <div class="stack" id="stack" aria-hidden="true"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><span class="label">Salles occupées</span><span class="k" id="kRooms">0</span><small id="kRoomsS"></small></div>
+      <div class="kpi"><span class="label">Séances en cours</span><span class="k" id="kSess">0</span><small id="kSessS"></small></div>
+      <div class="kpi note" id="kNoteBox"><span class="label">Note du jour</span><span class="k" id="kNote">–</span><small id="kNoteS"></small></div>
+      <div class="kpi"><span class="label">Pic du jour</span><span class="k" id="kPeak">0</span><small id="kPeakS"></small></div>
+    </div>
+  </div>
+
+  <section class="card" aria-labelledby="wk">
+    <div class="weekbar">
+      <h2 id="wk">Semaine</h2>
+      <div class="nav">
+        <button id="prev" type="button" aria-label="Semaine précédente">← Préc.</button>
+        <button id="today" type="button">Cette semaine</button>
+        <button id="next" type="button" aria-label="Semaine suivante">Suiv. →</button>
+      </div>
+    </div>
+    <div class="chart" id="chart"></div>
+    <p class="hint">Cliquez dans une journée pour voir ce moment en détail. Le trait jaune marque l'heure actuelle.</p>
+  </section>
+
+  <div class="lower">
+    <section class="card">
+      <h3>Salles par bâtiment <small id="momentA"></small></h3>
+      <div class="blds" id="blds"></div>
+    </section>
+    <section class="card">
+      <h3>Séances en cours <small id="momentB"></small></h3>
+      <div class="list" id="list"></div>
+    </section>
+  </div>
+
+  <footer id="foot"></footer>
+</div>
+<div id="tip" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>
